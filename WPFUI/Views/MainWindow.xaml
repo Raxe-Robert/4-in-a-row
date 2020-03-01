@@ -3,13 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:helpers="clr-namespace:WPFUI.Helpers"
 		mc:Ignorable="d"
         Title="MainWindow" MinHeight="480" MinWidth="560" Height="960" Width="1120">
 
 	<Window.Resources>
-		<DataTemplate x:Key="chipTemplate">
-			<Ellipse Fill="{Binding Chip.Color}"></Ellipse>
+		<DataTemplate x:Key="Player1Template">
+			<Ellipse Fill="Red"></Ellipse>
 		</DataTemplate>
+		
+		<DataTemplate x:Key="Player2Template">
+			<Ellipse Fill="Yellow"></Ellipse>
+		</DataTemplate>
+
+		<helpers:ChipTemplateSelector x:Key="ChipTemplateSelector"
+									  Player1Template="{StaticResource Player1Template}"
+									  Player2Template="{StaticResource Player2Template}"/>
 	</Window.Resources>
 
 	<Grid>
@@ -28,7 +37,7 @@
 			<Run Text="Beurt: "/>
 			<Run Text="{Binding Path=Game.Turn}"/>
 			<Run Text=", speler "/>
-			<Run Text="{Binding Path=Game.CurrentPlayer}"/>
+			<Run Text="{Binding Path=Game.CurrentPlayer, Mode=OneWay}"/>
 			<Run Text=" is aan zet."/>
 		</TextBlock>
 
@@ -40,7 +49,7 @@
 					 Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" 
 					 Background="Transparent"
 					 MouseLeftButtonDown="GameGrid_MouseLeftButtonDown">
-			<ItemsControl ItemsSource="{Binding Path=Game.Chips}" ItemTemplate="{StaticResource chipTemplate}">
+			<ItemsControl ItemsSource="{Binding Path=Game.Chips}" ItemTemplateSelector="{StaticResource ChipTemplateSelector}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<Grid ShowGridLines="True">
@@ -64,6 +73,7 @@
 						</Grid>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
+				
 				<ItemsControl.ItemContainerStyle>
 					<Style>
 						<Setter Property="Grid.Row" Value="{Binding Chip.Row}"/>

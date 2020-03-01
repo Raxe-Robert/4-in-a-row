@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using WPFUI.Commands;
 using WPFUI.Models;
@@ -37,10 +39,10 @@ namespace WPFUI.ViewModels
 		public void DoMove(int column)
 		{
 			// Find an empty row for the given column
-			int row = Game.ChipsArr.GetLength(0) - 1;
+			int row = Game.Grid.GetLength(1) - 1;
 			for (; row >= 0; row--)
 			{
-				if (Game.ChipsArr[row, column] == null)
+				if (Game.Grid[column, row] == 0)
 					break;
 			}
 
@@ -52,19 +54,98 @@ namespace WPFUI.ViewModels
 			var chip = viewModel.Chip;
 			chip.Row = row;
 			chip.Column = column;
-			chip.Color = Game.CurrentPlayer == 1 ? "Red" : "Yellow";
+			chip.Player = Game.CurrentPlayer;
 
-			Game.ChipsArr[row, column] = viewModel;
+			Game.Grid[column, row] = Game.CurrentPlayer;
 			Game.Chips.Add(viewModel);
 
-			CheckWinner();
+			if (CheckWinner())
+				Debug.Print($"Player {Game.CurrentPlayer} has won at turn {Game.Turn}!");
 
 			Game.Turn++;
-			Game.CurrentPlayer = Game.CurrentPlayer == 1 ? 2 : 1;
 		}
 
 		bool CheckWinner()
 		{
+			var grid = Game.Grid;
+			var columns = grid.GetLength(0);
+			var rows = grid.GetLength(1);
+
+			var lastChip = Game.Chips[^1].Chip;
+
+			var xMin = Math.Clamp(lastChip.Column - 3, 0, columns - 1);
+			var xMax = Math.Clamp(lastChip.Column + 3, 0, columns - 1);
+			var yMin = Math.Clamp(lastChip.Row - 3, 0, rows - 1);
+			var yMax = Math.Clamp(lastChip.Row + 3, 0, rows - 1);
+
+			var counter = 0;
+
+			{
+				// Horizontal
+				for (int x = xMin; x <= xMax; x++)
+				{
+					var player = grid[x, lastChip.Row];
+
+					counter = (player == lastChip.Player) ? counter + 1 : 0;
+					if (counter == 4)
+						return true;
+				}
+			}
+
+			counter = 0;
+
+			{
+				// Vertical
+				for (int y = yMin; y <= yMax; y++)
+				{
+					var player = grid[lastChip.Column, y];
+
+					counter = (player == lastChip.Player) ? counter + 1 : 0;
+					if (counter == 4)
+						return true;
+				}
+			}
+
+			counter = 0;
+
+			{
+				// Diagonal: top left (-1, -1) to bottom right (1, 1)
+				var topLeft = Math.Max(xMin - lastChip.Column, yMin - lastChip.Row);
+				var bottomRight = Math.Min(xMax - lastChip.Column, yMax - lastChip.Row);
+
+				for (int i = topLeft; i <= bottomRight; i++)
+				{
+					var x = lastChip.Column + i;
+					var y = lastChip.Row + i;
+
+					var player = grid[x, y];
+
+					counter = (player == lastChip.Player) ? counter + 1 : 0;
+					if (counter == 4)
+						return true;
+				}
+			}
+
+			counter = 0;
+
+			{
+				// Diagonal: bottom left (1, -1) to top right (-1, 1)
+				var bottomLeft = Math.Max(xMin - lastChip.Column, lastChip.Row - yMax);
+				var topRight = Math.Min(xMax - lastChip.Column, lastChip.Row - yMin);
+
+				for (int i = bottomLeft; i <= topRight; i++)
+				{
+					var x = lastChip.Column + i;
+					var y = lastChip.Row - i;
+
+					var player = grid[x, y];
+
+					counter = (player == lastChip.Player) ? counter + 1 : 0;
+					if (counter == 4)
+						return true;
+				}
+			}
+
 			return false;
 		}
 

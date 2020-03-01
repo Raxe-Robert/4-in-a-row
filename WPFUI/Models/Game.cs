@@ -9,9 +9,8 @@ namespace WPFUI.Models
 		public const int ROWS = 6;
 		public const int COLUMNS = 7;
 
-
 		public ObservableCollection<ChipViewModel> Chips { get; set; }
-		public ChipViewModel[,] ChipsArr { get; set; }
+		public int[,] Grid { get; set; }
 
 		private int _turn;
 		public int Turn
@@ -24,30 +23,17 @@ namespace WPFUI.Models
 
 				_turn = value;
 				OnPropertyChanged();
+				OnPropertyChanged("CurrentPlayer");
 			}
 		}
-
-		private int _currentPlayer;
-		public int CurrentPlayer
-		{
-			get { return _currentPlayer; }
-			set
-			{
-				if (_currentPlayer == value)
-					return;
-
-				_currentPlayer = value;
-				OnPropertyChanged();
-			}
-		}
+		public int CurrentPlayer => Turn % 2 == 0 ? 2 : 1;
 
 		public Game()
 		{
 			Chips = new ObservableCollection<ChipViewModel>();
-			ChipsArr = new ChipViewModel[ROWS, COLUMNS];
+			Grid = new int[COLUMNS, ROWS];
 
 			Turn = 1;
-			CurrentPlayer = 1;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

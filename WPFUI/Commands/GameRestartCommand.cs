@@ -6,7 +6,7 @@ namespace WPFUI.Commands
 {
 	internal class GameRestartCommand : ICommand
 	{
-		private GameViewModel _viewModel;
+		private readonly GameViewModel _viewModel;
 
 		public GameRestartCommand(GameViewModel viewModel)
 		{
