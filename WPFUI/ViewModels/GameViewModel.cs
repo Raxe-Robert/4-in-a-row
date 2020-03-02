@@ -79,10 +79,7 @@ namespace WPFUI.ViewModels
 			chip.Row = row;
 			chip.Column = column;
 			chip.Player = Game.CurrentPlayer;
-
-			// Clear the preview chip and force a refresh of our chips collection
 			_previewChipViewModel = null;
-			Chips.Move(Chips.Count - 1, Chips.Count - 1);
 
 			if (HasCurrentPlayerWon())
 			{
