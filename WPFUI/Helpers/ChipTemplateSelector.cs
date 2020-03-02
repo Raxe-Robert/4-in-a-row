@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using WPFUI.ViewModels;
 
@@ -16,6 +17,7 @@ namespace WPFUI.Helpers
 			if (!(item is ChipViewModel viewModel))
 				return selectedTemplate;
 
+			Debug.Print("Selection: " + viewModel.Chip.Player.ToString());
 			switch (viewModel.Chip.Player)
 			{
 				case 1:

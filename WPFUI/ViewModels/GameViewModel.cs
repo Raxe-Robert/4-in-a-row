@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Windows.Data;
 using System.Windows.Input;
 using WPFUI.Commands;
 using WPFUI.Models;
@@ -22,58 +26,108 @@ namespace WPFUI.ViewModels
 			}
 		}
 
+		public ObservableCollection<ChipViewModel> Chips { get; private set; }
+		private ChipViewModel _previewChipViewModel;
+
 		public ICommand RestartCommand { get; private set; }
 
 		public GameViewModel()
 		{
 			Game = new Game();
+			Chips = new ObservableCollection<ChipViewModel>();
 
 			RestartCommand = new GameRestartCommand(this);
 		}
 
-		/// <summary>
-		/// Perform a move for the currently active player
-		/// </summary>
-		/// <param name="column">Index between 0 (inclusive) and <see cref="COLUMNS"/>(exlusive)</param>
-		public void DoMove(int column)
+		public void UpdateMovePreview(int column)
 		{
 			if (Game.Finished)
 				return;
 
-			// Find an empty row for the given column
-			int row = Game.Board.GetLength(1) - 1;
-			for (; row >= 0; row--)
-			{
-				if (Game.Board[column, row] == 0)
-					break;
-			}
-
-			// Row is full
-			if (row < 0)
+			var row = GetEmptyRowIndex(column);
+			if (row == -1)
 				return;
 
-			ChipViewModel viewModel = new ChipViewModel();
-			var chip = viewModel.Chip;
+			if (_previewChipViewModel == null)
+			{
+				_previewChipViewModel = new ChipViewModel();
+				Chips.Add(_previewChipViewModel);
+			}
+
+			var previewChip = _previewChipViewModel.Chip;
+			previewChip.Column = column;
+			previewChip.Row = row;
+			previewChip.Player = Game.CurrentPlayer;
+		}
+
+		/// <summary>
+		/// Perform a move for the current player
+		/// </summary>
+		/// <param name="column">Index between 0 (inclusive) and <see cref="Game.COLUMNS"/>(exlusive)</param>
+		public void DoMove(int column)
+		{
+			if (Game.Finished || _previewChipViewModel == null)
+				return;
+
+			var row = GetEmptyRowIndex(column);
+			if (row == -1)
+				return;
+
+			Game.Board[column, row] = Game.CurrentPlayer;
+
+			var chip = _previewChipViewModel.Chip;
 			chip.Row = row;
 			chip.Column = column;
 			chip.Player = Game.CurrentPlayer;
 
-			Game.Board[column, row] = Game.CurrentPlayer;
-			Game.Chips.Add(viewModel);
+			// Clear the preview chip and force a refresh of our chips collection
+			_previewChipViewModel = null;
+			Chips.Move(Chips.Count - 1, Chips.Count - 1);
 
-			if (CheckWinner())
+			if (HasCurrentPlayerWon())
+			{
 				Game.Finished = true;
-			else
-				Game.Turn++;
+				return;
+			}
+
+			Game.Turn++;
+			UpdateMovePreview(column);
 		}
 
-		bool CheckWinner()
+		public void Restart()
+		{
+			Game = new Game();
+			Chips.Clear();
+		}
+
+		/// <summary>
+		/// Checks if the board contains an empty row for the given column
+		/// </summary>
+		/// <param name="column"></param>
+		/// <returns>Returns -1 if no row was found</returns>
+		private int GetEmptyRowIndex(int column)
+		{
+			int row = Game.Board.GetLength(1) - 1;
+			for (; row >= 0; row--)
+			{
+				if (Game.Board[column, row] == 0)
+					return row;
+			}
+			
+			return -1;
+		}
+
+		/// <summary>
+		/// Checks if the last move resulted in a player winning the game
+		/// </summary>
+		/// <remarks>Can not be used to check the whole board.</remarks>
+		private bool HasCurrentPlayerWon()
 		{
 			var grid = Game.Board;
 			var columns = grid.GetLength(0);
 			var rows = grid.GetLength(1);
 
-			var lastChip = Game.Chips[^1].Chip;
+			var lastChip = Chips[^1].Chip;
 
 			var xMin = Math.Clamp(lastChip.Column - 3, 0, columns - 1);
 			var xMax = Math.Clamp(lastChip.Column + 3, 0, columns - 1);
@@ -149,11 +203,6 @@ namespace WPFUI.ViewModels
 			}
 
 			return false;
-		}
-
-		public void Restart()
-		{
-			Game = new Game();
 		}
 	}
 }

@@ -1,16 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using WPFUI.ViewModels;
 
 namespace WPFUI.Models
 {
-	internal class Game : INotifyPropertyChanged
+	internal class Game : BaseModel
 	{
 		public const int ROWS = 6;
 		public const int COLUMNS = 7;
 
-		public ObservableCollection<ChipViewModel> Chips { get; set; }
 		public int[,] Board { get; set; }
 
 		private int _turn;
@@ -47,17 +44,10 @@ namespace WPFUI.Models
 
 		public Game()
 		{
-			Chips = new ObservableCollection<ChipViewModel>();
 			Board = new int[COLUMNS, ROWS];
 
 			Turn = 1;
 			Finished = false;
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-		private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

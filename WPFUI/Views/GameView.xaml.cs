@@ -21,15 +21,28 @@ namespace WPFUI.Views
 		private void GameGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			var element = (FrameworkElement)sender;
-
-			// Determine which column has been clicked
-			var clickPos = e.GetPosition(element);
-			var gridWidth = element.ActualWidth;
-			var xPosClickPercentage = clickPos.X / gridWidth;
-			var col = (int)(Game.COLUMNS * xPosClickPercentage);
+			var column = GetColumn(element, e);
 
 			var viewModel = (GameViewModel)DataContext;
-			viewModel.DoMove(col);
+			viewModel.DoMove(column);
+		}
+
+		private void GameGrid_MouseMove(object sender, MouseEventArgs e)
+		{
+			var element = (FrameworkElement)sender;
+			var column = GetColumn(element, e);
+
+			var viewModel = (GameViewModel)DataContext;
+			viewModel.UpdateMovePreview(column);
+		}
+
+		private int GetColumn(FrameworkElement el, MouseEventArgs mousePoint)
+		{
+			var clickPos = mousePoint.GetPosition(el);
+			var gridWidth = el.ActualWidth;
+			var xPosClickPercentage = clickPos.X / gridWidth;
+			
+			return (int)(Game.COLUMNS * xPosClickPercentage);
 		}
 	}
 }

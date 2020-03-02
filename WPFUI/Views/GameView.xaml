@@ -4,7 +4,8 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			xmlns:helpers="clr-namespace:WPFUI.Helpers"
-            mc:Ignorable="d" 
+			xmlns:views="clr-namespace:WPFUI.Views"
+            mc:Ignorable="d"
             d:DesignHeight="249.381" d:DesignWidth="480.681">
 
 	<UserControl.Resources>
@@ -48,11 +49,12 @@
 					 Grid.Column="1"
 					 Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"
 					 MaxHeight="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualWidth}"
-					 MouseLeftButtonDown="GameGrid_MouseLeftButtonDown">
+					 MouseLeftButtonDown="GameGrid_MouseLeftButtonDown"
+					 MouseMove="GameGrid_MouseMove">
 			<UniformGrid.Background>
 				<ImageBrush ImageSource="/Images/Board.png" />
 			</UniformGrid.Background>
-			<ItemsControl ItemsSource="{Binding Path=Game.Chips}" ItemTemplateSelector="{StaticResource ChipTemplateSelector}">
+			<ItemsControl ItemsSource="{Binding Path=Chips}" ItemTemplateSelector="{StaticResource ChipTemplateSelector}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<Grid>
@@ -94,13 +96,21 @@
 			   Height="100"
 			   AllowsTransparency="True"
 			   IsOpen="{Binding Game.Finished, Mode=OneWay}">
-			<Border Background="LightGoldenrodYellow">
+			<StackPanel Background="LightGray">
 				<TextBlock>
-					<Run Text="Player "/>
+					<Run Text="Speler "/>
 					<Run Text="{Binding Game.CurrentPlayer, Mode=OneWay}"/>
-					<Run Text=" has won!"/>
+					<Run Text=" heeft gewonnen!"/>
 				</TextBlock>
-			</Border>
+
+				<Button Content="Opnieuw"
+						Command="{Binding RestartCommand}"/>
+
+				<Button Content="Menu"
+						Command="{Binding Path=DataContext.NavigateViewCommand, 
+							RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type views:MainWindow}}}"
+						CommandParameter="Menu" />
+			</StackPanel>
 		</Popup>
 	</Grid>
 </UserControl>

@@ -59,8 +59,6 @@
 
 		<Button Grid.Column="0" 
 				Grid.Row="1"
-				Command="{Binding Path=DataContext.NavigateViewCommand, 
-					RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type views:MainWindow}}}"
 				CommandParameter="Game" Content="1 Speler"/>
 		<Button Grid.Column="2"
 				Grid.Row="1"
