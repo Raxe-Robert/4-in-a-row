@@ -17,7 +17,6 @@ namespace WPFUI.Helpers
 			if (!(item is ChipViewModel viewModel))
 				return selectedTemplate;
 
-			Debug.Print("Selection: " + viewModel.Chip.Player.ToString());
 			switch (viewModel.Chip.Player)
 			{
 				case 1:

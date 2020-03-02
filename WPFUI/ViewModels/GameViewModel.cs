@@ -95,6 +95,7 @@ namespace WPFUI.ViewModels
 		{
 			Game = new Game();
 			Chips.Clear();
+			_previewChipViewModel = null;
 		}
 
 		/// <summary>
