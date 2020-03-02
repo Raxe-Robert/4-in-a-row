@@ -1,8 +1,8 @@
 ﻿using WPFUI.Models;
 
-namespace WPFUI
+namespace WPFUI.ViewModels
 {
-	internal class ChipViewModel
+	internal class ChipViewModel : BaseViewModel
 	{
 		public Chip Chip { get; private set; }
 

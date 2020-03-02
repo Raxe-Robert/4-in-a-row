@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WPFUI.ViewModels;
 
 namespace WPFUI.Models
 {
@@ -10,7 +11,7 @@ namespace WPFUI.Models
 		public const int COLUMNS = 7;
 
 		public ObservableCollection<ChipViewModel> Chips { get; set; }
-		public int[,] Grid { get; set; }
+		public int[,] Board { get; set; }
 
 		private int _turn;
 		public int Turn
@@ -26,14 +27,31 @@ namespace WPFUI.Models
 				OnPropertyChanged("CurrentPlayer");
 			}
 		}
+
+		private bool _finished;
+		public bool Finished
+		{ 
+			get { return _finished; }
+			set
+			{
+				if (_finished == value)
+					return;
+
+				_finished = value;
+				OnPropertyChanged();
+			}
+		}
+
+
 		public int CurrentPlayer => Turn % 2 == 0 ? 2 : 1;
 
 		public Game()
 		{
 			Chips = new ObservableCollection<ChipViewModel>();
-			Grid = new int[COLUMNS, ROWS];
+			Board = new int[COLUMNS, ROWS];
 
 			Turn = 1;
+			Finished = false;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

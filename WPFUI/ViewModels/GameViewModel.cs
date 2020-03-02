@@ -1,13 +1,12 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using WPFUI.Commands;
 using WPFUI.Models;
 
 namespace WPFUI.ViewModels
 {
-	internal class GameViewModel : INotifyPropertyChanged
+	internal class GameViewModel : BaseViewModel
 	{
 		private Game _game;
 		public Game Game
@@ -23,7 +22,7 @@ namespace WPFUI.ViewModels
 			}
 		}
 
-		public GameRestartCommand RestartCommand { get; private set; }
+		public ICommand RestartCommand { get; private set; }
 
 		public GameViewModel()
 		{
@@ -38,11 +37,14 @@ namespace WPFUI.ViewModels
 		/// <param name="column">Index between 0 (inclusive) and <see cref="COLUMNS"/>(exlusive)</param>
 		public void DoMove(int column)
 		{
+			if (Game.Finished)
+				return;
+
 			// Find an empty row for the given column
-			int row = Game.Grid.GetLength(1) - 1;
+			int row = Game.Board.GetLength(1) - 1;
 			for (; row >= 0; row--)
 			{
-				if (Game.Grid[column, row] == 0)
+				if (Game.Board[column, row] == 0)
 					break;
 			}
 
@@ -56,18 +58,18 @@ namespace WPFUI.ViewModels
 			chip.Column = column;
 			chip.Player = Game.CurrentPlayer;
 
-			Game.Grid[column, row] = Game.CurrentPlayer;
+			Game.Board[column, row] = Game.CurrentPlayer;
 			Game.Chips.Add(viewModel);
 
 			if (CheckWinner())
-				Debug.Print($"Player {Game.CurrentPlayer} has won at turn {Game.Turn}!");
-
-			Game.Turn++;
+				Game.Finished = true;
+			else
+				Game.Turn++;
 		}
 
 		bool CheckWinner()
 		{
-			var grid = Game.Grid;
+			var grid = Game.Board;
 			var columns = grid.GetLength(0);
 			var rows = grid.GetLength(1);
 
@@ -153,12 +155,5 @@ namespace WPFUI.ViewModels
 		{
 			Game = new Game();
 		}
-
-		private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
 	}
 }

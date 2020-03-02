@@ -7,6 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\Board.png" />
+    <None Remove="Images\RedChip.png" />
+    <None Remove="Images\YellowChip.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Board.png" />
+    <Resource Include="Images\RedChip.png" />
+    <Resource Include="Images\YellowChip.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -19,6 +31,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\GameView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

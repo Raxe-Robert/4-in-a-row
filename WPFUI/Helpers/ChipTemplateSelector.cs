@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using WPFUI.Models;
+using WPFUI.ViewModels;
 
 namespace WPFUI.Helpers
 {

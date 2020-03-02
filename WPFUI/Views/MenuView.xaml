@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="WPFUI.Views.MenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:views="clr-namespace:WPFUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="810.785" d:DesignWidth="899.897">
+
+	<UserControl.Resources>
+		<Style TargetType="Button">
+			<Setter Property="FontFamily" Value="Quicksand"/>
+			<Setter Property="FontSize" Value="32"/>
+			<Setter Property="Background" Value="#E65555"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="MaxHeight" Value="200"/>
+			<Setter Property="MaxWidth" Value="200"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="2">
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							<Border.Style>
+								<Style TargetType="{x:Type Border}">
+									<Setter Property="CornerRadius" Value="5"/>
+								</Style>
+							</Border.Style>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="BorderBrush" TargetName="border" Value="Yellow"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Resources>
+
+	<Grid Margin="40">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<TextBlock Text="4 op een rij"
+				   FontSize="40" 
+				   FontFamily="Script Mt"
+				   Grid.Column="0"
+				   Grid.Row="0"
+				   Grid.ColumnSpan="2"
+				   TextAlignment="Center" 
+				   VerticalAlignment="Center"/>
+
+		<Button Grid.Column="0" 
+				Grid.Row="1"
+				Command="{Binding Path=DataContext.NavigateViewCommand, 
+					RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type views:MainWindow}}}"
+				CommandParameter="Game" Content="1 Speler"/>
+		<Button Grid.Column="2"
+				Grid.Row="1"
+				Command="{Binding Path=DataContext.NavigateViewCommand, 
+					RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type views:MainWindow}}}"
+				CommandParameter="Game" Content="2 Spelers"/>
+	</Grid>
+</UserControl>

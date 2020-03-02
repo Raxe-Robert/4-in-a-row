@@ -1,86 +1,19 @@
-﻿<Window x:Class="WPFUI.MainWindow"
+﻿<Window x:Class="WPFUI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:helpers="clr-namespace:WPFUI.Helpers"
 		mc:Ignorable="d"
-        Title="MainWindow" MinHeight="480" MinWidth="560" Height="960" Width="1120">
-
-	<Window.Resources>
-		<DataTemplate x:Key="Player1Template">
-			<Ellipse Fill="Red"></Ellipse>
-		</DataTemplate>
-		
-		<DataTemplate x:Key="Player2Template">
-			<Ellipse Fill="Yellow"></Ellipse>
-		</DataTemplate>
-
-		<helpers:ChipTemplateSelector x:Key="ChipTemplateSelector"
-									  Player1Template="{StaticResource Player1Template}"
-									  Player2Template="{StaticResource Player2Template}"/>
-	</Window.Resources>
+        Title="MainWindow" MinHeight="480" MinWidth="560" Height="600" Width="800">
 
 	<Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="20"/>
 			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="20"/>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="auto"/>
 			<RowDefinition Height="*"/>
-			<RowDefinition Height="20"/>
 		</Grid.RowDefinitions>
 
-		<TextBlock Grid.Row="0" Grid.Column="1">
-			<Run Text="Beurt: "/>
-			<Run Text="{Binding Path=Game.Turn}"/>
-			<Run Text=", speler "/>
-			<Run Text="{Binding Path=Game.CurrentPlayer, Mode=OneWay}"/>
-			<Run Text=" is aan zet."/>
-		</TextBlock>
-
-		<Button Grid.Row="0" Grid.Column="2" Content="Restart" Command="{Binding RestartCommand}"/>
-
-		<UniformGrid x:Name="GameGrid" 
-					 Grid.Row="1" 
-					 Grid.Column="1" 
-					 Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" 
-					 Background="Transparent"
-					 MouseLeftButtonDown="GameGrid_MouseLeftButtonDown">
-			<ItemsControl ItemsSource="{Binding Path=Game.Chips}" ItemTemplateSelector="{StaticResource ChipTemplateSelector}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<Grid ShowGridLines="True">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-						</Grid>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				
-				<ItemsControl.ItemContainerStyle>
-					<Style>
-						<Setter Property="Grid.Row" Value="{Binding Chip.Row}"/>
-						<Setter Property="Grid.Column" Value="{Binding Chip.Column}"/>
-					</Style>
-				</ItemsControl.ItemContainerStyle>
-			</ItemsControl>
-		</UniformGrid>
+		<ContentControl Content="{Binding ActiveViewModel}"/>
 	</Grid>
 </Window>

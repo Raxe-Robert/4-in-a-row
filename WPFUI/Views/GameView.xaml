@@ -1,0 +1,106 @@
+﻿<UserControl x:Class="WPFUI.Views.GameView"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:helpers="clr-namespace:WPFUI.Helpers"
+            mc:Ignorable="d" 
+            d:DesignHeight="249.381" d:DesignWidth="480.681">
+
+	<UserControl.Resources>
+		<DataTemplate x:Key="Player1Template">
+			<Image Source="/Images/RedChip.png" Stretch="Fill"/>
+		</DataTemplate>
+
+		<DataTemplate x:Key="Player2Template">
+			<Image Source="/Images/YellowChip.png" Stretch="Fill"/>
+		</DataTemplate>
+
+		<helpers:ChipTemplateSelector x:Key="ChipTemplateSelector"
+									  Player1Template="{StaticResource Player1Template}"
+									  Player2Template="{StaticResource Player2Template}"/>
+	</UserControl.Resources>
+
+	<Grid x:Name="LayoutGrid">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="auto"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Row="1" Grid.Column="0">
+			<TextBlock Grid.Row="1" Grid.Column="0">
+				<Run Text="Beurt: "/>
+				<Run Text="{Binding Path=Game.Turn}"/>
+				<Run Text=", speler "/>
+				<Run Text="{Binding Path=Game.CurrentPlayer, Mode=OneWay}"/>
+				<Run Text=" is aan zet."/>
+			</TextBlock>
+
+			<Button Grid.Row="0" Grid.Column="2" Content="Opnieuw" Command="{Binding RestartCommand}"/>
+		</StackPanel>
+
+		<UniformGrid x:Name="GameGrid" 
+					 Grid.Row="1" 
+					 Grid.Column="1"
+					 Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"
+					 MaxHeight="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualWidth}"
+					 MouseLeftButtonDown="GameGrid_MouseLeftButtonDown">
+			<UniformGrid.Background>
+				<ImageBrush ImageSource="/Images/Board.png" />
+			</UniformGrid.Background>
+			<ItemsControl ItemsSource="{Binding Path=Game.Chips}" ItemTemplateSelector="{StaticResource ChipTemplateSelector}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="*"/>
+							</Grid.RowDefinitions>
+						</Grid>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.ItemContainerStyle>
+					<Style>
+						<Setter Property="Grid.Row" Value="{Binding Chip.Row}"/>
+						<Setter Property="Grid.Column" Value="{Binding Chip.Column}"/>
+					</Style>
+				</ItemsControl.ItemContainerStyle>
+			</ItemsControl>
+		</UniformGrid>
+
+		<Popup x:Name="GameOverPopup"
+			   PlacementTarget="{Binding ElementName=LayoutGrid}"
+			   Placement="Center"
+			   PopupAnimation="Slide"
+			   Width="100"
+			   Height="100"
+			   AllowsTransparency="True"
+			   IsOpen="{Binding Game.Finished, Mode=OneWay}">
+			<Border Background="LightGoldenrodYellow">
+				<TextBlock>
+					<Run Text="Player "/>
+					<Run Text="{Binding Game.CurrentPlayer, Mode=OneWay}"/>
+					<Run Text=" has won!"/>
+				</TextBlock>
+			</Border>
+		</Popup>
+	</Grid>
+</UserControl>
