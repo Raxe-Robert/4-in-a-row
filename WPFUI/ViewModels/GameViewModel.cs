@@ -27,7 +27,20 @@ namespace WPFUI.ViewModels
 		}
 
 		public ObservableCollection<ChipViewModel> Chips { get; private set; }
-		private ChipViewModel _previewChipViewModel;
+
+		private ChipViewModel _preview;
+		public ChipViewModel Preview
+		{ 
+			get { return _preview; }
+			set
+			{
+				if (_preview == value)
+					return;
+
+				_preview = value;
+				OnPropertyChanged();
+			}
+		}
 
 		public ICommand RestartCommand { get; private set; }
 
@@ -48,13 +61,13 @@ namespace WPFUI.ViewModels
 			if (row == -1)
 				return;
 
-			if (_previewChipViewModel == null)
+			if (Preview == null)
 			{
-				_previewChipViewModel = new ChipViewModel();
-				Chips.Add(_previewChipViewModel);
+				Preview = new ChipViewModel();
+				Chips.Add(Preview);
 			}
 
-			var previewChip = _previewChipViewModel.Chip;
+			var previewChip = Preview.Chip;
 			previewChip.Column = column;
 			previewChip.Row = row;
 			previewChip.Player = Game.CurrentPlayer;
@@ -66,7 +79,7 @@ namespace WPFUI.ViewModels
 		/// <param name="column">Index between 0 (inclusive) and <see cref="Game.COLUMNS"/>(exlusive)</param>
 		public void DoMove(int column)
 		{
-			if (Game.Finished || _previewChipViewModel == null)
+			if (Game.Finished || Preview == null)
 				return;
 
 			var row = GetEmptyRowIndex(column);
@@ -75,11 +88,10 @@ namespace WPFUI.ViewModels
 
 			Game.Board[column, row] = Game.CurrentPlayer;
 
-			var chip = _previewChipViewModel.Chip;
+			var chip = Preview.Chip;
 			chip.Row = row;
 			chip.Column = column;
 			chip.Player = Game.CurrentPlayer;
-			_previewChipViewModel = null;
 
 			if (HasCurrentPlayerWon())
 			{
@@ -87,15 +99,15 @@ namespace WPFUI.ViewModels
 				return;
 			}
 
+			Preview = null;
 			Game.Turn++;
-			UpdateMovePreview(column);
 		}
 
 		public void Restart()
 		{
 			Game = new Game();
 			Chips.Clear();
-			_previewChipViewModel = null;
+			Preview = null;
 		}
 
 		/// <summary>

@@ -40,9 +40,9 @@ namespace WPFUI.Views
 		{
 			var clickPos = mousePoint.GetPosition(el);
 			var gridWidth = el.ActualWidth;
-			var xPosClickPercentage = clickPos.X / gridWidth;
+			var xPercentage = clickPos.X / gridWidth;
 			
-			return (int)(Game.COLUMNS * xPosClickPercentage);
+			return (int)(Game.COLUMNS * xPercentage);
 		}
 	}
 }

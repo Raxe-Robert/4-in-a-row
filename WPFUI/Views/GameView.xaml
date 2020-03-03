@@ -20,28 +20,35 @@
 		<helpers:ChipTemplateSelector x:Key="ChipTemplateSelector"
 									  Player1Template="{StaticResource Player1Template}"
 									  Player2Template="{StaticResource Player2Template}"/>
+
+		<Style TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}"/>
 	</UserControl.Resources>
 
 	<Grid x:Name="LayoutGrid">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="auto"/>
-			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="auto"/>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
-		<StackPanel Grid.Row="1" Grid.Column="0">
-			<TextBlock Grid.Row="1" Grid.Column="0">
-				<Run Text="Beurt: "/>
-				<Run Text="{Binding Path=Game.Turn}"/>
-				<Run Text=", speler "/>
-				<Run Text="{Binding Path=Game.CurrentPlayer, Mode=OneWay}"/>
-				<Run Text=" is aan zet."/>
-			</TextBlock>
+		<StackPanel Grid.Row="1" 
+					Grid.Column="0"
+					Margin="10"
+					MaxWidth="80">
+			<ContentControl 
+				Content="{Binding Path=Preview}" 
+				ContentTemplateSelector="{StaticResource ChipTemplateSelector}"
+				MaxHeight="40"
+				MaxWidth="40"/>
 
-			<Button Grid.Row="0" Grid.Column="2" Content="Opnieuw" Command="{Binding RestartCommand}"/>
+			<Button 
+				Grid.Row="0" 
+				Grid.Column="2" 
+				Content="Herstarten" 
+				Command="{Binding RestartCommand}"/>
 		</StackPanel>
 
 		<UniformGrid x:Name="GameGrid" 
@@ -91,12 +98,18 @@
 		<Popup x:Name="GameOverPopup"
 			   PlacementTarget="{Binding ElementName=LayoutGrid}"
 			   Placement="Center"
-			   PopupAnimation="Slide"
-			   Width="100"
-			   Height="100"
+			   PopupAnimation="Fade"
+			   Width="auto"
+			   Height="auto"
+			   Margin="10"
 			   AllowsTransparency="True"
 			   IsOpen="{Binding Game.Finished, Mode=OneWay}">
 			<StackPanel Background="LightGray">
+				<ContentControl 
+					Content="{Binding Path=Preview}" 
+					ContentTemplateSelector="{StaticResource ChipTemplateSelector}"
+					MaxHeight="40"
+					MaxWidth="40"/>
 				<TextBlock>
 					<Run Text="Speler "/>
 					<Run Text="{Binding Game.CurrentPlayer, Mode=OneWay}"/>

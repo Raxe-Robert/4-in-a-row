@@ -8,32 +8,10 @@
              d:DesignHeight="810.785" d:DesignWidth="899.897">
 
 	<UserControl.Resources>
-		<Style TargetType="Button">
-			<Setter Property="FontFamily" Value="Quicksand"/>
+		<Style TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
 			<Setter Property="FontSize" Value="32"/>
-			<Setter Property="Background" Value="#E65555"/>
-			<Setter Property="Foreground" Value="White"/>
 			<Setter Property="MaxHeight" Value="200"/>
 			<Setter Property="MaxWidth" Value="200"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type Button}">
-						<Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="2">
-							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-							<Border.Style>
-								<Style TargetType="{x:Type Border}">
-									<Setter Property="CornerRadius" Value="5"/>
-								</Style>
-							</Border.Style>
-						</Border>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsMouseOver" Value="True">
-								<Setter Property="BorderBrush" TargetName="border" Value="Yellow"/>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
 		</Style>
 	</UserControl.Resources>
 
@@ -59,7 +37,8 @@
 
 		<Button Grid.Column="0" 
 				Grid.Row="1"
-				CommandParameter="Game" Content="1 Speler"/>
+				CommandParameter="Game" Content="1 Speler"
+				/>
 		<Button Grid.Column="2"
 				Grid.Row="1"
 				Command="{Binding Path=DataContext.NavigateViewCommand, 
