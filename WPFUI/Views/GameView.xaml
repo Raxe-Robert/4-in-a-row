@@ -22,6 +22,8 @@
 									  Player2Template="{StaticResource Player2Template}"/>
 
 		<Style TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}"/>
+
+		<BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 	</UserControl.Resources>
 
 	<Grid x:Name="LayoutGrid">
@@ -30,32 +32,53 @@
 			<ColumnDefinition Width="auto"/>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
-		<StackPanel Grid.Row="1" 
-					Grid.Column="0"
-					Margin="10"
-					MaxWidth="80">
-			<ContentControl 
-				Content="{Binding Path=Preview}" 
-				ContentTemplateSelector="{StaticResource ChipTemplateSelector}"
+		<Grid x:Name="MenuGrid" 
+			  Grid.Row="0"
+			  Grid.Column="0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+			</Grid.RowDefinitions>
+			
+			<ContentControl
+				Grid.Column="0"
+				Grid.Row="0"
 				MaxHeight="40"
-				MaxWidth="40"/>
+				MaxWidth="40"
+				Content="{Binding Path=Preview}" 
+				ContentTemplateSelector="{StaticResource ChipTemplateSelector}"/>
 
 			<Button 
-				Grid.Row="0" 
-				Grid.Column="2" 
-				Content="Herstarten" 
+				Grid.Column="0"
+				Grid.Row="2"
+				Content="Herstarten"	
 				Command="{Binding RestartCommand}"/>
+			
+			<Button Grid.Column="0"
+					Grid.Row="3"
+					Content="Stoppen"
+					Command="{Binding Path=DataContext.NavigateViewCommand, 
+						RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type views:MainWindow}}}"
+					CommandParameter="Menu"/>
+		</Grid>
+		<StackPanel Grid.Row="1" 
+					Grid.Column="0"
+					Margin="10">
+			
 		</StackPanel>
 
 		<UniformGrid x:Name="GameGrid" 
-					 Grid.Row="1" 
+					 Grid.Row="0" 
 					 Grid.Column="1"
 					 Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"
-					 MaxHeight="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualWidth}"
 					 MouseLeftButtonDown="GameGrid_MouseLeftButtonDown"
 					 MouseMove="GameGrid_MouseMove">
 			<UniformGrid.Background>
@@ -95,35 +118,36 @@
 			</ItemsControl>
 		</UniformGrid>
 
-		<Popup x:Name="GameOverPopup"
-			   PlacementTarget="{Binding ElementName=LayoutGrid}"
-			   Placement="Center"
-			   PopupAnimation="Fade"
-			   Width="auto"
-			   Height="auto"
-			   Margin="10"
-			   AllowsTransparency="True"
-			   IsOpen="{Binding Game.Finished, Mode=OneWay}">
-			<StackPanel Background="LightGray">
-				<ContentControl 
-					Content="{Binding Path=Preview}" 
-					ContentTemplateSelector="{StaticResource ChipTemplateSelector}"
-					MaxHeight="40"
-					MaxWidth="40"/>
-				<TextBlock>
-					<Run Text="Speler "/>
-					<Run Text="{Binding Game.CurrentPlayer, Mode=OneWay}"/>
-					<Run Text=" heeft gewonnen!"/>
-				</TextBlock>
+		<Grid x:Name="GameOverGrid"
+				Grid.Row="0" 
+				Grid.Column="0"
+				Grid.ColumnSpan="2"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Visibility="{Binding Path=Game.Finished, Converter={StaticResource BoolToVisibility}}"
+				>
+			<Border Padding="10" Background="#f3f3f3">
+				<StackPanel>				
+					<ContentControl 
+						Content="{Binding Path=Preview}" 
+						ContentTemplateSelector="{StaticResource ChipTemplateSelector}"
+						MaxHeight="40"
+						MaxWidth="40"/>
+					<TextBlock>
+						<Run Text="Speler "/>
+						<Run Text="{Binding Game.CurrentPlayer, Mode=OneWay}"/>
+						<Run Text=" heeft gewonnen!"/>
+					</TextBlock>
 
-				<Button Content="Opnieuw"
-						Command="{Binding RestartCommand}"/>
+					<Button Content="Herstarten"
+							Command="{Binding RestartCommand}"/>
 
-				<Button Content="Menu"
-						Command="{Binding Path=DataContext.NavigateViewCommand, 
-							RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type views:MainWindow}}}"
-						CommandParameter="Menu" />
-			</StackPanel>
-		</Popup>
+					<Button Content="Stoppen"
+							Command="{Binding Path=DataContext.NavigateViewCommand, 
+								RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type views:MainWindow}}}"
+							CommandParameter="Menu"/>
+				</StackPanel>
+			</Border>
+		</Grid>
 	</Grid>
 </UserControl>
