@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using WPFUI.Common;
 
 namespace WPFUI.ViewModels
 {
-	internal class MenuViewModel : BaseViewModel
+	internal class MenuViewModel : ObservableObject
 	{
+		public MenuViewModel()
+		{
+		}
 	}
 }

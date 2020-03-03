@@ -37,12 +37,12 @@
 
 		<Button Grid.Column="0" 
 				Grid.Row="1"
-				CommandParameter="Game" Content="1 Speler"
-				/>
+				Content="1 Speler"
+				Click="SingleplayerButton_Click"/>
+		
 		<Button Grid.Column="2"
 				Grid.Row="1"
-				Command="{Binding Path=DataContext.NavigateViewCommand, 
-					RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type views:MainWindow}}}"
-				CommandParameter="Game" Content="2 Spelers"/>
+				Content="2 Spelers"
+				Click="MultiplayerButton_Click"/>
 	</Grid>
 </UserControl>

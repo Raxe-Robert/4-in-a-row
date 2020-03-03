@@ -1,12 +1,13 @@
 ﻿using System.Windows.Input;
 using WPFUI.Commands;
+using WPFUI.Common;
 
 namespace WPFUI.ViewModels
 {
-	internal class MainViewModel : BaseViewModel
+	internal class MainViewModel : ObservableObject
 	{
-		private BaseViewModel _activeViewModel;
-		public BaseViewModel ActiveViewModel 
+		private ObservableObject _activeViewModel;
+		public ObservableObject ActiveViewModel 
 		{ 
 			get { return _activeViewModel; }
 			set

@@ -1,8 +1,9 @@
-﻿using WPFUI.Models;
+﻿using WPFUI.Common;
+using WPFUI.Models;
 
 namespace WPFUI.ViewModels
 {
-	internal class ChipViewModel : BaseViewModel
+	internal class ChipViewModel : ObservableObject
 	{
 		public Chip Chip { get; private set; }
 

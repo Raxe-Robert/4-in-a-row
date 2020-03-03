@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WPFUI.ViewModels
+namespace WPFUI.Common
 {
-	internal abstract class BaseViewModel : INotifyPropertyChanged
+	internal abstract class ObservableObject : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 

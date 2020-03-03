@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Windows.Data;
+using System.Windows;
 using System.Windows.Input;
 using WPFUI.Commands;
+using WPFUI.Common;
 using WPFUI.Models;
 
 namespace WPFUI.ViewModels
 {
-	internal class GameViewModel : BaseViewModel
+	internal class GameViewModel : ObservableObject
 	{
 		private Game _game;
 		public Game Game
@@ -25,6 +23,11 @@ namespace WPFUI.ViewModels
 				OnPropertyChanged();
 			}
 		}
+
+		public enum GameModes { Singleplayer, Multiplayer}
+		public GameModes GameMode { get; private set; }
+
+		private bool IsCurrentPlayerAI => GameMode == GameModes.Singleplayer && Game.CurrentPlayer == 2;
 
 		public ObservableCollection<ChipViewModel> Chips { get; private set; }
 
@@ -50,11 +53,19 @@ namespace WPFUI.ViewModels
 			Chips = new ObservableCollection<ChipViewModel>();
 
 			RestartCommand = new GameRestartCommand(this);
+
+			var selectedGameMode = Application.Current.Properties["GameMode"];
+			GameMode = selectedGameMode switch
+			{
+				"Singleplayer" => GameModes.Singleplayer,
+				"Multiplayer" => GameModes.Multiplayer,
+				_ => GameModes.Singleplayer
+			};
 		}
 
 		public void UpdateMovePreview(int column)
 		{
-			if (Game.Finished)
+			if (Game.Finished || IsCurrentPlayerAI)
 				return;
 
 			var row = GetEmptyRowIndex(column);
@@ -77,9 +88,19 @@ namespace WPFUI.ViewModels
 		/// Perform a move for the current player
 		/// </summary>
 		/// <param name="column">Index between 0 (inclusive) and <see cref="Game.COLUMNS"/>(exlusive)</param>
-		public void DoMove(int column)
+		public void DoPlayerMove(int column)
 		{
-			if (Game.Finished || Preview == null)
+			if (!IsCurrentPlayerAI)
+				DoMove(column);
+		}
+
+		/// <summary>
+		/// Perform a move for the <see cref="Game.CurrentPlayer"/>
+		/// </summary>
+		/// <param name="column">Index between 0 (inclusive) and <see cref="Game.COLUMNS"/>(exlusive)</param>
+		private void DoMove(int column)
+		{
+			if (Game.Finished)
 				return;
 
 			var row = GetEmptyRowIndex(column);
@@ -87,6 +108,12 @@ namespace WPFUI.ViewModels
 				return;
 
 			Game.Board[column, row] = Game.CurrentPlayer;
+
+			if (Preview == null)
+			{
+				Preview = new ChipViewModel();
+				Chips.Add(Preview);
+			}
 
 			var chip = Preview.Chip;
 			chip.Row = row;
@@ -101,6 +128,16 @@ namespace WPFUI.ViewModels
 
 			Preview = null;
 			Game.Turn++;
+
+			// Immediately perform the move for the AI
+			if (IsCurrentPlayerAI)
+			{
+				// Determine best move
+				var rand = new System.Random();
+				var col = rand.Next(0, Game.COLUMNS);
+
+				DoMove(col);
+			}
 		}
 
 		public void Restart()

@@ -14,8 +14,6 @@ namespace WPFUI.Views
 		public GameView()
 		{
 			InitializeComponent();
-
-			DataContext = new GameViewModel();
 		}
 
 		private void GameGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -24,7 +22,7 @@ namespace WPFUI.Views
 			var column = GetColumn(element, e);
 
 			var viewModel = (GameViewModel)DataContext;
-			viewModel.DoMove(column);
+			viewModel.DoPlayerMove(column);
 		}
 
 		private void GameGrid_MouseMove(object sender, MouseEventArgs e)

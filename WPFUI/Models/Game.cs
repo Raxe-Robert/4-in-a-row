@@ -1,9 +1,8 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using WPFUI.Common;
 
 namespace WPFUI.Models
 {
-	internal class Game : BaseModel
+	internal class Game : ObservableObject
 	{
 		public const int ROWS = 6;
 		public const int COLUMNS = 7;

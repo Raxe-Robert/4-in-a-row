@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+﻿using WPFUI.Common;
 
 namespace WPFUI.Models
 {
-	internal class Chip : BaseModel
+	internal class Chip : ObservableObject
 	{
 		private int _row;
 		public int Row
