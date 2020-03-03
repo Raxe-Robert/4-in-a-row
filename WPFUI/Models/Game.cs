@@ -7,7 +7,14 @@ namespace WPFUI.Models
 		public const int ROWS = 6;
 		public const int COLUMNS = 7;
 
-		public int[,] Board { get; set; }
+		public enum PlayerType { Human, Computer }
+		public enum Player
+		{
+			None = 0,
+			Red = 1,
+			Yellow = 2,
+		}
+		public Player[,] Board { get; set; }
 
 		private int _turn;
 		public int Turn
@@ -39,11 +46,11 @@ namespace WPFUI.Models
 		}
 
 
-		public int CurrentPlayer => Turn % 2 == 0 ? 2 : 1;
+		public Player CurrentPlayer => Turn % 2 == 0 ? Player.Yellow : Player.Red;
 
 		public Game()
 		{
-			Board = new int[COLUMNS, ROWS];
+			Board = new Player[COLUMNS, ROWS];
 
 			Turn = 1;
 			Finished = false;

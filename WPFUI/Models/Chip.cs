@@ -32,8 +32,8 @@ namespace WPFUI.Models
 			}
 		}
 
-		private int _player;
-		public int Player
+		private Game.Player _player;
+		public Game.Player Player
 		{
 			get { return _player; }
 			set

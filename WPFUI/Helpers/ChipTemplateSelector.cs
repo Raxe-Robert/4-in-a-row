@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using WPFUI.Models;
 using WPFUI.ViewModels;
 
 namespace WPFUI.Helpers
@@ -19,10 +20,10 @@ namespace WPFUI.Helpers
 
 			switch (viewModel.Chip.Player)
 			{
-				case 1:
+				case Game.Player.Red:
 					selectedTemplate = Player1Template;
 					break;
-				case 2:
+				case Game.Player.Yellow:
 					selectedTemplate = Player2Template;
 					break;
 			}

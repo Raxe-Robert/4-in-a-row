@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using WPFUI.Commands;
 using WPFUI.Common;
 using WPFUI.Models;
+using static WPFUI.Models.Game;
 
 namespace WPFUI.ViewModels
 {
@@ -24,11 +26,6 @@ namespace WPFUI.ViewModels
 			}
 		}
 
-		public enum GameModes { Singleplayer, Multiplayer}
-		public GameModes GameMode { get; private set; }
-
-		private bool IsCurrentPlayerAI => GameMode == GameModes.Singleplayer && Game.CurrentPlayer == 2;
-
 		public ObservableCollection<ChipViewModel> Chips { get; private set; }
 
 		private ChipViewModel _preview;
@@ -47,6 +44,18 @@ namespace WPFUI.ViewModels
 
 		public ICommand RestartCommand { get; private set; }
 
+		private IDictionary<Player, PlayerType> _players;
+		public PlayerType GetCurrentPlayerType
+		{
+			get
+			{
+				if (_players.TryGetValue(Game.CurrentPlayer, out PlayerType value))
+					return value;
+
+				return PlayerType.Human;
+			}
+		}
+
 		public GameViewModel()
 		{
 			Game = new Game();
@@ -54,18 +63,23 @@ namespace WPFUI.ViewModels
 
 			RestartCommand = new GameRestartCommand(this);
 
-			var selectedGameMode = Application.Current.Properties["GameMode"];
-			GameMode = selectedGameMode switch
+			string gameMode = (string)Application.Current.Properties["GameMode"];
+
+			var playerType = PlayerType.Human;
+			if (gameMode == "Singleplayer")
+				playerType = PlayerType.Computer;
+
+			_players = new Dictionary<Player, PlayerType>
 			{
-				"Singleplayer" => GameModes.Singleplayer,
-				"Multiplayer" => GameModes.Multiplayer,
-				_ => GameModes.Singleplayer
+				{ Player.Red, PlayerType.Human },
+				{ Player.Yellow, playerType }
 			};
+
 		}
 
 		public void UpdateMovePreview(int column)
 		{
-			if (Game.Finished || IsCurrentPlayerAI)
+			if (Game.Finished || GetCurrentPlayerType == PlayerType.Computer)
 				return;
 
 			var row = GetEmptyRowIndex(column);
@@ -85,12 +99,12 @@ namespace WPFUI.ViewModels
 		}
 
 		/// <summary>
-		/// Perform a move for the current player
+		/// Perform a move for the current (non computer) player
 		/// </summary>
 		/// <param name="column">Index between 0 (inclusive) and <see cref="Game.COLUMNS"/>(exlusive)</param>
 		public void DoPlayerMove(int column)
 		{
-			if (!IsCurrentPlayerAI)
+			if (GetCurrentPlayerType == PlayerType.Human)
 				DoMove(column);
 		}
 
@@ -130,11 +144,11 @@ namespace WPFUI.ViewModels
 			Game.Turn++;
 
 			// Immediately perform the move for the AI
-			if (IsCurrentPlayerAI)
+			if (GetCurrentPlayerType == PlayerType.Computer)
 			{
 				// Determine best move
-				var rand = new System.Random();
-				var col = rand.Next(0, Game.COLUMNS);
+				var rand = new Random();
+				var col = rand.Next(0, COLUMNS);
 
 				DoMove(col);
 			}

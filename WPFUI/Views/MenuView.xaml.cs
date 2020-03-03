@@ -16,9 +16,9 @@ namespace WPFUI.Views
 			InitializeComponent();
 		}
 
-		private void SingleplayerButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		private void SingleplayerButton_Click(object sender, RoutedEventArgs e)
 		{
-			Application.Current.Properties["GameMode"] = "Singeplayer";
+			Application.Current.Properties["GameMode"] = "Singleplayer";
 
 			NavigateToGame();
 		}
